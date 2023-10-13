@@ -1,0 +1,46 @@
+package dev.awn.jwttokenservice.core.user.controller;
+
+import dev.awn.jwttokenservice.common.exception.ValidationException;
+import dev.awn.jwttokenservice.core.user.service.UserService;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import dev.awn.jwttokenservice.core.user.dto.JwtAuthenticationResponse;
+import dev.awn.jwttokenservice.core.user.dto.SignInRequest;
+import dev.awn.jwttokenservice.core.user.dto.SignUpRequest;
+
+import lombok.RequiredArgsConstructor;
+
+@RestController
+@RequestMapping("/api/v1/users")
+@RequiredArgsConstructor
+public class UserController {
+
+    private final UserService userService;
+
+    @PostMapping("/signup")
+    public JwtAuthenticationResponse signup(@Validated @RequestBody SignUpRequest request,
+                                            BindingResult bindingResult) {
+
+        if(bindingResult.hasErrors()) {
+            throw new ValidationException(bindingResult);
+        }
+
+        return userService.signup(request);
+    }
+
+    @PostMapping("/signin")
+    public JwtAuthenticationResponse signin(@Validated @RequestBody SignInRequest request,
+                                            BindingResult bindingResult) {
+
+        if(bindingResult.hasErrors()) {
+            throw new ValidationException(bindingResult);
+        }
+
+        return userService.signin(request);
+    }
+}
