@@ -23,24 +23,28 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/signup")
-    public JwtAuthenticationResponse signup(@Validated @RequestBody SignUpRequest request,
-                                            BindingResult bindingResult) {
+    public ResponseEntity<JwtAuthenticationResponse> signup(@Validated @RequestBody SignUpRequest request,
+                                                            BindingResult bindingResult) {
 
         if(bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);
         }
 
-        return userService.signup(request);
+        JwtAuthenticationResponse jwtAuthenticationResponse = userService.signup(request);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                             .body(jwtAuthenticationResponse);
     }
 
     @PostMapping("/signin")
-    public JwtAuthenticationResponse signin(@Validated @RequestBody SignInRequest request,
-                                            BindingResult bindingResult) {
+    public ResponseEntity<JwtAuthenticationResponse> signin(@Validated @RequestBody SignInRequest request,
+                                                            BindingResult bindingResult) {
 
         if(bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);
         }
 
-        return userService.signin(request);
+        return ResponseEntity.status(HttpStatus.OK)
+                             .body(jwtAuthenticationResponse);
     }
 }
