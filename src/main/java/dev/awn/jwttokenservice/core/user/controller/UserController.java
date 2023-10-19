@@ -2,6 +2,8 @@ package dev.awn.jwttokenservice.core.user.controller;
 
 import dev.awn.jwttokenservice.common.exception.ValidationException;
 import dev.awn.jwttokenservice.core.user.service.UserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,6 +45,8 @@ public class UserController {
         if(bindingResult.hasErrors()) {
             throw new ValidationException(bindingResult);
         }
+
+        JwtAuthenticationResponse jwtAuthenticationResponse = userService.signin(request);
 
         return ResponseEntity.status(HttpStatus.OK)
                              .body(jwtAuthenticationResponse);
