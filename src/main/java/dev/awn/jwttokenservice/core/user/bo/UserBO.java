@@ -37,16 +37,6 @@ public class UserBO {
         this.jwtUtils = jwtUtils;
     }
 
-    public UserDetailsService getUserDetailsService() {
-        return new UserDetailsService() {
-            @Override
-            public UserDetails loadUserByUsername(String username) {
-                return userRepository.findByEmail(username)
-                                     .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-            }
-        };
-    }
-
     public JwtAuthenticationResponse signup(SignUpRequest request) {
         User user = userMapper.toEntity(request);
 
@@ -63,10 +53,10 @@ public class UserBO {
     }
 
     public JwtAuthenticationResponse signin(SignInRequest request) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
-
         User user = userRepository.findByEmail(request.getEmail())
-                                  .orElseThrow(() -> new BadRequestException("Invalid email or password."));
+                                  .orElseThrow(() -> new BadRequestException("Email doesn't exist"));
+
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
 
         String jwt = jwtUtils.generateToken(user);
 
