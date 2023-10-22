@@ -10,6 +10,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -87,6 +88,16 @@ public class GlobalExceptionHandler {
                                                         HttpStatus.SERVICE_UNAVAILABLE.value(),
                                                         HttpStatus.SERVICE_UNAVAILABLE.getReasonPhrase(),
                                                         "Service is currently unavailable, try again later");
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ErrorResponse> handleAuthenticationException(AuthenticationException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(LocalDateTime.now(),
+                                                        HttpStatus.UNAUTHORIZED.value(),
+                                                        HttpStatus.UNAUTHORIZED.getReasonPhrase(),
+                                                        "Invalid Credentials");
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
