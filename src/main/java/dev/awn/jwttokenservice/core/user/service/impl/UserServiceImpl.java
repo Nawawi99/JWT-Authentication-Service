@@ -16,11 +16,6 @@ public class UserServiceImpl implements UserService {
 
     private final UserBO userBO;
 
-    @Override
-    public UserDetailsService userDetailsService() {
-        return userBO.getUserDetailsService();
-    }
-
 
     public JwtAuthenticationResponse signup(SignUpRequest request) {
         String email = request.getEmail();

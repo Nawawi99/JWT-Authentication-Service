@@ -3,11 +3,14 @@ package dev.awn.jwttokenservice.common.security.filters;
 import java.io.IOException;
 
 import dev.awn.jwttokenservice.core.user.service.UserService;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -27,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
   
   private final JwtUtils jwtUtils;
-  private final UserService userService;
+  private final UserDetailsService userDetailsService;
 
   @Override
   protected void doFilterInternal(HttpServletRequest request,
@@ -45,7 +48,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       log.debug("JWT - {}", jwt.toString());
       userEmail = jwtUtils.extractUserName(jwt);
       if (StringUtils.isNotEmpty(userEmail) && SecurityContextHolder.getContext().getAuthentication() == null) {
-          UserDetails userDetails = userService.userDetailsService().loadUserByUsername(userEmail);
+          UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
 
           if (jwtUtils.isTokenValid(jwt, userDetails)) {
             log.debug("User - {}", userDetails);

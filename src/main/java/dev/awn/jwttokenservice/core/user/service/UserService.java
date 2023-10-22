@@ -7,11 +7,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 
 public interface UserService {
 
-    /*
-        Authentication Services
-     */
-    UserDetailsService userDetailsService();
-
     JwtAuthenticationResponse signup(SignUpRequest request);
 
     JwtAuthenticationResponse signin(SignInRequest request);
